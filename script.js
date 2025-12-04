@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const favClass = isFav ? 'active' : '';
         const favText = isFav ? '★' : '☆';
         const compClass = isCompleted ? 'active' : '';
-        const compText = isCompleted ? '✔️ 완료됨' : '완료 체크';
+        const compText = isCompleted ? '완료됨' : '완료 체크';
 
         let relatedHtml = '';
         const relatedList = itemsByCategory[item.category]
@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach(m => {
             const isDone = currentCompleted.includes(m.id);
-            const statusHtml = isDone ? '<span class="modal-item-status">✔️ 완료</span>' : '';
+            const statusHtml = isDone ? '<span class="modal-item-status">완료</span>' : '';
             const li = document.createElement('li');
             li.className = 'modal-item';
             li.innerHTML = `
