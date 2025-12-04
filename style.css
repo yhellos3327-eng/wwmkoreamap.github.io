@@ -69,6 +69,7 @@ body {
 #map-container {
     flex: 1;
     position: relative;
+    overflow: hidden;
 }
 
 #map {
@@ -88,8 +89,20 @@ body {
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
-    display: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    display: none;
+    transition: opacity 0.2s;
+}
+
+.menu-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.sidebar.collapsed+#map-container .menu-btn {
+    display: block;
+    animation: fadeIn 0.3s;
 }
 
 .sidebar {
@@ -99,9 +112,14 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    transition: transform 0.3s ease;
+    transition: margin-left 0.3s ease, transform 0.3s ease;
     z-index: 2000;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+    margin-left: -360px;
 }
 
 .sidebar-header {
@@ -120,10 +138,16 @@ body {
 .close-btn {
     background: none;
     border: none;
-    color: var(--text-main);
-    font-size: 1.5rem;
+    color: var(--text-muted);
+    font-size: 1.8rem;
     cursor: pointer;
-    display: none;
+    line-height: 1;
+    padding: 0 5px;
+    display: block;
+}
+
+.close-btn:hover {
+    color: var(--accent);
 }
 
 .search-container input {
@@ -644,14 +668,18 @@ body {
         position: absolute;
         height: 100%;
         transform: translateX(-100%);
+        margin-left: 0 !important;
     }
 
     .sidebar.open {
         transform: translateX(0);
     }
 
-    .close-btn,
     .menu-btn {
         display: block;
+    }
+
+    .sidebar.open+#map-container .menu-btn {
+        display: none;
     }
 }

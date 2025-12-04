@@ -524,9 +524,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBtn = document.getElementById('open-sidebar');
     const closeBtn = document.getElementById('toggle-sidebar');
 
-    if (openBtn) openBtn.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.add('open'); });
-    if (closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('open'));
-    map.on('click', () => { if (window.innerWidth <= 768) sidebar.classList.remove('open'); });
+    function toggleSidebar(action) {
+        const isMobile = window.innerWidth <= 768;
+
+        if (action === 'open') {
+            if (isMobile) {
+                sidebar.classList.add('open');
+            } else {
+                sidebar.classList.remove('collapsed');
+                setTimeout(() => { map.invalidateSize(); }, 300);
+            }
+        } else if (action === 'close') {
+            if (isMobile) {
+                sidebar.classList.remove('open');
+            } else {
+                sidebar.classList.add('collapsed');
+                setTimeout(() => { map.invalidateSize(); }, 300);
+            }
+        }
+    }
+
+    if (openBtn) {
+        openBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSidebar('open');
+        });
+    }
+
+    // 닫기(X) 버튼 클릭
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            toggleSidebar('close');
+        });
+    }
+
+    // 지도 클릭 시 (모바일에서만 사이드바 닫기)
+    map.on('click', () => {
+        if (window.innerWidth <= 768) {
+            toggleSidebar('close');
+        }
+    });
+
+    // 화면 크기 변경 시 레이아웃 초기화 (선택 사항)
+    window.addEventListener('resize', () => {
+        map.invalidateSize();
+    });
 
     renderFavorites();
     renderLinks();
