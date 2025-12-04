@@ -1,6 +1,3 @@
-// script.js
-
-// 1. 번역 사전
 const koDict = {
     "Chest": "보물상자",
     "NPC": "NPC",
@@ -48,7 +45,6 @@ const koDict = {
     "Wrestling": "씨름"
 };
 
-// 사이드바 링크 목록
 const usefulLinks = [
     { title: "공식 홈페이지", url: "https://www.wherewindsmeetgame.com/kr/index.html" },
     { title: "기반 위키 (Wiki)", url: "https://wherewindsmeet.wiki.fextralife.com/" },
@@ -66,26 +62,19 @@ const t = (key) => {
     return koDict[trimmedKey] || key;
 }
 
-// 전역 변수
 let targetArrowMarker = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    // ---------------------------------------------------------
-    // 2. 데이터 로드 및 전처리
-    // ---------------------------------------------------------
     if (typeof mapData === 'undefined' || !mapData.categories || !mapData.items) {
         console.error("data.js 파일 오류");
         alert("데이터 로드 실패. data.js를 확인하세요.");
         return;
     }
 
-    // 중복 카테고리 제거 (이미지가 있는 것만 유효)
     const validCategories = mapData.categories.filter(cat => {
         return cat.image && cat.image.trim() !== "";
     });
 
-    // [추가] 연관 항목 표시를 위한 데이터 그룹화 (성능 최적화)
     const itemsByCategory = {};
     mapData.items.forEach(item => {
         if (!itemsByCategory[item.category]) {
@@ -94,17 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
         itemsByCategory[item.category].push(item);
     });
 
-    // 이름순 정렬 (퀘스트 I, II, III 순서 등을 위해)
     for (const key in itemsByCategory) {
         itemsByCategory[key].sort((a, b) => a.name.localeCompare(b.name));
     }
 
     console.log(`Loaded Categories: ${validCategories.length}`);
 
-
-    // ---------------------------------------------------------
-    // 3. 지도 초기화
-    // ---------------------------------------------------------
     const map = L.map('map', {
         crs: L.CRS.Simple,
         minZoom: 3,
@@ -115,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    // 타일 레이어
     L.tileLayer('./tiles/{z}/{x}/{y}.jpg', {
         minZoom: 3,
         maxZoom: 7,
@@ -129,15 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
     map.setMaxBounds(mapBounds);
     map.fitBounds(mapBounds);
 
-
-    // ---------------------------------------------------------
-    // 4. 주요 로직 (마커, 카테고리, 즐겨찾기)
-    // ---------------------------------------------------------
     const layerGroups = {};
     const allMarkers = [];
     let favorites = JSON.parse(localStorage.getItem('wwm_favorites')) || [];
 
-    // 4-1. 카테고리 생성
     const categoryListEl = document.getElementById('category-list');
 
     validCategories.forEach(cat => {
@@ -162,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
         categoryListEl.appendChild(btn);
     });
 
-    // 4-2. 마커 생성
     mapData.items.forEach(item => {
         const catId = item.category;
 
@@ -189,8 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 itemId: item.id
             });
 
-            // [추가] 관련 항목 HTML 생성
-            // 같은 카테고리 내의 다른 아이템들을 찾음 (자기 자신 제외, 최대 3개)
             let relatedHtml = '';
             const relatedList = itemsByCategory[catId]
                 ? itemsByCategory[catId].filter(i => i.id !== item.id).slice(0, 3)
@@ -209,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            // 팝업 생성
             const isFav = favorites.includes(item.id);
             const favClass = isFav ? 'active' : '';
             const favText = isFav ? '★ 즐겨찾기 됨' : '☆ 즐겨찾기';
@@ -246,11 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ---------------------------------------------------------
-    // 5. 기능 함수들
-    // ---------------------------------------------------------
-
-    // [추가] 팝업 내 링크 클릭 시 해당 마커로 점프
     window.jumpToId = (id) => {
         const target = allMarkers.find(m => m.id === id);
         if (target) {
@@ -258,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 즐겨찾기 토글
     window.toggleFavorite = (id) => {
         const index = favorites.indexOf(id);
         const btn = document.querySelector(`.popup-container[data-id="${id}"] .btn-fav`);
@@ -280,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderFavorites();
     };
 
-    // 공유하기
     window.shareLocation = (id, lat, lng) => {
         const baseUrl = window.location.href.split('?')[0];
         const shareUrl = `${baseUrl}?id=${id}&lat=${lat}&lng=${lng}`;
@@ -292,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 즐겨찾기 목록 렌더링
     function renderFavorites() {
         const favListEl = document.getElementById('favorite-list');
         favListEl.innerHTML = '';
@@ -320,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 링크 목록 렌더링
     function renderLinks() {
         const linkListEl = document.getElementById('link-list');
         linkListEl.innerHTML = '';
@@ -335,13 +300,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 위치 이동
     function moveToLocation(latlng, marker = null) {
         map.setView(latlng, 6, { animate: true });
 
         if (marker) {
             const catId = marker.options.alt;
-            // 해당 마커의 카테고리가 꺼져있으면 켜기
             if (layerGroups[catId] && !map.hasLayer(layerGroups[catId])) {
                 map.addLayer(layerGroups[catId]);
             }
@@ -349,11 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ---------------------------------------------------------
-    // 6. 이벤트 리스너 (검색, 탭, 사이드바)
-    // ---------------------------------------------------------
-
-    // 검색
     const searchInput = document.getElementById('search-input');
     searchInput.addEventListener('input', (e) => {
         const term = e.target.value.trim().toLowerCase();
@@ -367,7 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 탭 전환
     const tabs = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -383,7 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 사이드바 UI
     const sidebar = document.getElementById('sidebar');
     const openBtn = document.getElementById('open-sidebar');
     const closeBtn = document.getElementById('toggle-sidebar');
@@ -392,20 +348,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('open'));
     map.on('click', () => { if (window.innerWidth <= 768) sidebar.classList.remove('open'); });
 
-    // ---------------------------------------------------------
-    // 7. 초기 실행
-    // ---------------------------------------------------------
     renderFavorites();
     renderLinks();
 
-    // 공유 URL 파라미터 확인
     const urlParams = new URLSearchParams(window.location.search);
     const sharedId = parseInt(urlParams.get('id'));
     const sharedLat = parseFloat(urlParams.get('lat'));
     const sharedLng = parseFloat(urlParams.get('lng'));
 
     if (sharedId && !isNaN(sharedLat) && !isNaN(sharedLng)) {
-        // 지도 로딩 안정성을 위해 약간 지연
         setTimeout(() => {
             const targetItem = allMarkers.find(m => m.id === sharedId);
             if (targetItem) {
