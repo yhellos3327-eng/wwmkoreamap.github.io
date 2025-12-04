@@ -1,4 +1,4 @@
-const commonTranslations = [
+const rawTranslations = [
     { keys: ["Chest"], value: "보물상자" },
     { keys: ["NPC"], value: "NPC" },
     { keys: ["Teleport"], value: "순간이동" },
@@ -26,6 +26,7 @@ const commonTranslations = [
     { keys: ["RestrictedZones", "Restricted Zones"], value: "출입 금지 구역" },
     { keys: ["MarketOffice", "Market Office"], value: "관청" },
     { keys: ["ShadowPuppetStall", "Shadow Puppet Stall"], value: "그림자 인형극" },
+    { keys: ["MadiaoCards", "Madiao Cards"], value: "엽자희" },
     { keys: ["MusicalDance", "Musical Dance"], value: "가무" },
     { keys: ["Pitch Pot"], value: "투호" },
     { keys: ["Chess Match"], value: "상기" },
@@ -45,14 +46,16 @@ const commonTranslations = [
     { keys: ["Wrestling"], value: "씨름" }
 ];
 
-const itemOverrides = {
-    /*
-    550: {
-        name: "금광각 깡패",
-        description: "이 녀석들은 금광각 소속의 악당들입니다. 조심하세요."
+const categoryItemTranslations = {
+    /*"NPC": {
+        550: { name: "금광각 깡패", description: "금광각 소속의 깡패입니다." },
+        551: { name: "금광각 깡패", description: "" },
+    },*/
+    "BoundaryStones": {
+        //12: { name: "경전 홀", description: "빠른 이동 지점입니다." },
     },
-    392: {
-        name: "풍지승의 활쏘기 시합",
-        description: "<h3>풍지승</h3><p>풍지승이 넓은 공터를 발견하고 당신을 활쏘기 시합에 초대했습니다.</p>"
+    /*
+    "Chest": {
+        721: { name: "숨겨진 보물상자", description: "바위 뒤에 숨겨져 있습니다." }
     }*/
 };

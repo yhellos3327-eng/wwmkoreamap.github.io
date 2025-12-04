@@ -1,57 +1,30 @@
-const rawTranslations = [
-    { keys: ["Chest"], value: "보물상자" },
-    { keys: ["NPC"], value: "NPC" },
-    { keys: ["Teleport"], value: "순간이동" },
-    { keys: ["Shop"], value: "상점" },
-    { keys: ["Bounty"], value: "현상금" },
-    { keys: ["Quest"], value: "퀘스트" },
-    { keys: ["World Boss"], value: "필드 보스" },
-    { keys: ["Meditation", "Meditation Spot"], value: "명상" },
-    { keys: ["Viewpoint", "View point"], value: "뷰포인트" },
-    { keys: ["Archive"], value: "기록" },
-    { keys: ["Cave"], value: "동굴" },
-    { keys: ["Puzzle"], value: "퍼즐" },
-    { keys: ["Gathering"], value: "채집" },
-    { keys: ["Fishing"], value: "낚시" },
-    { keys: ["Cooking"], value: "요리" },
-    { keys: ["Crafting"], value: "제작" },
-    { keys: ["Book"], value: "서적" },
-    { keys: ["Song"], value: "노래" },
-    { keys: ["Boundary Stones", "BoundaryStones"], value: "경계석" },
-    { keys: ["Bathhouse"], value: "사우나" },
-    { keys: ["CampaignQuest", "Campaign Quest"], value: "메인 퀘스트" },
-    { keys: ["SideStory", "Side Story"], value: "서브 스토리" },
-    { keys: ["OddityCollection", "Oddity Collection"], value: "기물 수집" },
-    { keys: ["DivinecraftDungeon", "Divinecraft Dungeon"], value: "신기 던전" },
-    { keys: ["RestrictedZones", "Restricted Zones"], value: "출입 금지 구역" },
-    { keys: ["MarketOffice", "Market Office"], value: "관청" },
-    { keys: ["ShadowPuppetStall", "Shadow Puppet Stall"], value: "그림자 인형극" },
-    { keys: ["MusicalDance", "Musical Dance"], value: "가무" },
-    { keys: ["Pitch Pot"], value: "투호" },
-    { keys: ["Chess Match"], value: "상기" },
-    { keys: ["Bell of Demoncalm"], value: "퇴마의 종" },
-    { keys: ["Show All"], value: "모두 보기" },
-    { keys: ["Show Completed"], value: "완료된 항목 보기" },
-    { keys: ["Share"], value: "공유" },
-    { keys: ["Favorite"], value: "즐겨찾기" },
-    { keys: ["Wayfarer"], value: "여행자" },
-    { keys: ["Horse Merchant"], value: "마구간지기" },
-    { keys: ["Crafting Bench"], value: "제작대" },
-    { keys: ["Fishing Contest"], value: "낚시 대회" },
-    { keys: ["Archery Competition"], value: "궁술 대회" },
-    { keys: ["Exploration Challenge"], value: "탐험 도전" },
-    { keys: ["Meow Meow Temple"], value: "묘묘 사원" },
-    { keys: ["Meow Meow's Treasure"], value: "묘묘의 보물" },
-    { keys: ["Wrestling"], value: "씨름" }
+const updateHistory = [
+    {
+        version: "v0.9.2",
+        date: "2025-12-05",
+        content: [
+            "카테고리별 필터링 및 검색 기능 추가",
+            "위치 공유 및 즐겨찾기, 완료 기능 구현",
+        ]
+    },
+    {
+        version: "v0.9.0",
+        date: "2025-12-05",
+        content: [
+            "기본 맵 타일 및 마커 데이터 연동"
+        ]
+    }
 ];
 
 const koDict = {};
-rawTranslations.forEach(item => {
-    item.keys.forEach(key => {
-        koDict[key] = item.value;
-        koDict[key.trim()] = item.value;
+if (typeof rawTranslations !== 'undefined') {
+    rawTranslations.forEach(item => {
+        item.keys.forEach(key => {
+            koDict[key] = item.value;
+            koDict[key.trim()] = item.value;
+        });
     });
-});
+}
 
 const usefulLinks = [
     { title: "공식 홈페이지", url: "https://www.wherewindsmeetgame.com/kr/index.html" },
@@ -60,7 +33,8 @@ const usefulLinks = [
     { title: "연운 공식 디스코드", url: "https://discord.gg/wherewindsmeet" },
     { title: "연운 한국 디스코드", url: "https://discord.gg/wherewindsmeetkr" },
     { title: "아카라이브 연운 채널", url: "https://arca.live/b/wherewindsmeet" },
-    { title: "디씨 연운 갤러리", url: "https://gall.dcinside.com/mgallery/board/lists?id=dusdns" },
+    { title: "디씨 연운 갤러리", url: "https://gall.dcinside.com/wherewindsmeets" },
+    { title: "디씨 개봉(연운) 갤러리", url: "https://gall.dcinside.com/dusdns" },
 ];
 
 const t = (key) => {
@@ -92,6 +66,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (typeof categoryItemTranslations !== 'undefined') {
+        mapData.items.forEach(item => {
+            if (categoryItemTranslations[item.category]) {
+                const transData = categoryItemTranslations[item.category][item.id];
+                if (transData) {
+                    if (transData.name) item.name = transData.name;
+                    if (transData.description) item.description = transData.description;
+                }
+            }
+        });
+    }
+
     const itemsByCategory = {};
     mapData.items.forEach(item => {
         if (!itemsByCategory[item.category]) {
@@ -99,9 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         itemsByCategory[item.category].push(item);
     });
-
     for (const key in itemsByCategory) {
-        itemsByCategory[key].sort((a, b) => t(a.name).localeCompare(t(b.name)));
+        itemsByCategory[key].sort((a, b) => a.name.localeCompare(b.name));
     }
 
     const boundaryStones = mapData.items.filter(item =>
@@ -109,8 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     function getNearestRegionName(targetX, targetY) {
-        if (boundaryStones.length === 0) return "";
-
+        if (boundaryStones.length === 0) return "알 수 없음";
         let minDist = Infinity;
         let nearestName = "";
         const tx = parseFloat(targetX);
@@ -120,13 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const bx = parseFloat(bs.x);
             const by = parseFloat(bs.y);
             const dist = Math.sqrt(Math.pow(tx - bx, 2) + Math.pow(ty - by, 2));
-
             if (dist < minDist) {
                 minDist = dist;
                 nearestName = bs.name;
             }
         });
-        return nearestName ? t(nearestName) : "";
+        return nearestName ? t(nearestName) : "알 수 없음";
     }
 
     const map = L.map('map', {
@@ -155,207 +138,316 @@ document.addEventListener('DOMContentLoaded', () => {
     const layerGroups = {};
     const allMarkers = [];
 
+    const activeCategoryIds = new Set();
+    const activeRegionNames = new Set();
+    const uniqueRegions = new Set();
+
     let favorites = JSON.parse(localStorage.getItem('wwm_favorites')) || [];
     let completedList = JSON.parse(localStorage.getItem('wwm_completed')) || [];
 
-    const categoryListEl = document.getElementById('category-list');
-
     validCategories.forEach(cat => {
-        layerGroups[cat.id] = L.layerGroup();
-        if (cat.loadDefault) {
-            layerGroups[cat.id].addTo(map);
-        }
-
-        const btn = document.createElement('button');
-        btn.className = cat.loadDefault ? 'cat-btn active' : 'cat-btn';
-        btn.innerHTML = `<img src="${cat.image}" alt=""> ${t(cat.name)}`;
-
-        btn.addEventListener('click', () => {
-            const isActive = btn.classList.toggle('active');
-            if (isActive) {
-                map.addLayer(layerGroups[cat.id]);
-            } else {
-                map.removeLayer(layerGroups[cat.id]);
-            }
-        });
-
-        categoryListEl.appendChild(btn);
+        if (cat.loadDefault) activeCategoryIds.add(cat.id);
     });
 
     mapData.items.forEach(item => {
-        const catId = item.category;
+        const lat = parseFloat(item.x);
+        const lng = parseFloat(item.y);
+        const regionName = getNearestRegionName(lat, lng);
 
-        if (layerGroups[catId]) {
-            const iconUrl = item.image ? item.image : './icons/marker.png';
-            const w = item.imageSizeW || 30;
-            const h = item.imageSizeH || 30;
+        if (regionName) uniqueRegions.add(regionName);
 
-            const isCompleted = completedList.includes(item.id);
-            const iconClass = isCompleted ? 'game-marker-icon completed-marker' : 'game-marker-icon';
+        const iconUrl = item.image ? item.image : './icons/marker.png';
+        const w = item.imageSizeW || 30;
+        const h = item.imageSizeH || 30;
+        const isCompleted = completedList.includes(item.id);
+        const iconClass = isCompleted ? 'game-marker-icon completed-marker' : 'game-marker-icon';
 
-            const customIcon = L.icon({
-                iconUrl: iconUrl,
-                iconSize: [w, h],
-                iconAnchor: [w / 2, h / 2],
-                popupAnchor: [0, -h / 2],
-                className: iconClass
-            });
+        const customIcon = L.icon({
+            iconUrl: iconUrl,
+            iconSize: [w, h],
+            iconAnchor: [w / 2, h / 2],
+            popupAnchor: [0, -h / 2],
+            className: iconClass
+        });
 
-            const lat = parseFloat(item.x);
-            const lng = parseFloat(item.y);
+        const marker = L.marker([lat, lng], {
+            icon: customIcon,
+            title: item.name,
+            alt: item.category,
+            itemId: item.id
+        });
 
-            const marker = L.marker([lat, lng], {
-                icon: customIcon,
-                title: item.name,
-                alt: item.category,
-                itemId: item.id
-            });
+        marker.bindPopup(() => createPopupHtml(item, lat, lng, regionName));
 
-            let relatedHtml = '';
-            const relatedList = itemsByCategory[catId]
-                ? itemsByCategory[catId].filter(i => i.id !== item.id)
-                : [];
-
-            if (relatedList.length > 0) {
-                const limit = 5;
-                let listItems = '';
-
-                relatedList.forEach((r, index) => {
-                    const hiddenClass = index >= limit ? 'hidden' : '';
-                    const regionName = getNearestRegionName(r.x, r.y);
-                    const regionHtml = regionName ? `<span class="related-region">(${regionName})</span>` : '';
-
-                    listItems += `
-                        <li class="related-item ${hiddenClass}" onclick="jumpToId(${r.id})">
-                            ${t(r.name)} ${regionHtml}
-                        </li>`;
-                });
-
-                let expandBtn = '';
-                if (relatedList.length > limit) {
-                    const remainCount = relatedList.length - limit;
-                    expandBtn = `<button class="btn-expand" onclick="expandRelated(this)">▼ 더보기 (${remainCount}+)</button>`;
-                }
-
-                relatedHtml = `
-                    <div class="popup-related">
-                        <div class="popup-related-header">
-                            <h5>
-                                관련 ${t(catId)} (${relatedList.length})
-                                <button class="btn-search-modal" onclick="openRelatedModal('${catId}')" title="전체 목록 검색">🔍</button>
-                            </h5>
-                        </div>
-                        <ul class="related-list">
-                            ${listItems}
-                        </ul>
-                        ${expandBtn}
-                    </div>
-                `;
-            }
-
-            const isFav = favorites.includes(item.id);
-            const favClass = isFav ? 'active' : '';
-            const favText = isFav ? '★' : '☆';
-
-            const compClass = isCompleted ? 'active' : '';
-            const compText = isCompleted ? '✔️ 완료됨' : '완료 체크';
-
-            const popupContent = `
-                <div class="popup-container" data-id="${item.id}">
-                    <div class="popup-header">
-                        ${item.image ? `<img src="${item.image}" class="popup-icon">` : ''}
-                        <h4>${t(item.name)}</h4>
-                    </div>
-                    <div class="popup-body">
-                        ${item.description ? `<p>${item.description}</p>` : '<p class="no-desc">설명 없음</p>'}
-                    </div>
-                    ${relatedHtml}
-                    <div class="popup-actions">
-                        <button class="action-btn btn-fav ${favClass}" onclick="toggleFavorite(${item.id})" title="즐겨찾기">${favText}</button>
-                        <button class="action-btn btn-complete ${compClass}" onclick="toggleCompleted(${item.id})" title="완료 상태로 표시">${compText}</button>
-                        <button class="action-btn btn-share" onclick="shareLocation(${item.id}, ${lat}, ${lng})">📤</button>
-                    </div>
-                    <div class="popup-footer">
-                        <span class="badge">${t(item.category)}</span>
-                    </div>
-                </div>
-            `;
-            marker.bindPopup(popupContent);
-            layerGroups[catId].addLayer(marker);
-
-            allMarkers.push({
-                id: item.id,
-                marker: marker,
-                name: item.name.toLowerCase(),
-                desc: (item.description || '').toLowerCase(),
-                category: catId,
-                pageLink: item.pageLink
-            });
-        }
+        allMarkers.push({
+            id: item.id,
+            marker: marker,
+            name: item.name.toLowerCase(),
+            desc: (item.description || '').toLowerCase(),
+            category: item.category,
+            region: regionName
+        });
     });
 
+    uniqueRegions.forEach(r => activeRegionNames.add(r));
+
+    function setAllCategories(isActive) {
+        const catBtns = document.querySelectorAll('#category-list .cat-btn');
+        activeCategoryIds.clear();
+
+        if (isActive) {
+            validCategories.forEach(c => activeCategoryIds.add(c.id));
+            catBtns.forEach(btn => btn.classList.add('active'));
+        } else {
+            catBtns.forEach(btn => btn.classList.remove('active'));
+        }
+        updateToggleButtonsState();
+        updateMapVisibility();
+    }
+
+    function setAllRegions(isActive) {
+        const regBtns = document.querySelectorAll('#region-list .cat-btn');
+        activeRegionNames.clear();
+
+        if (isActive) {
+            uniqueRegions.forEach(r => activeRegionNames.add(r));
+            regBtns.forEach(btn => btn.classList.add('active'));
+        } else {
+            regBtns.forEach(btn => btn.classList.remove('active'));
+        }
+        updateToggleButtonsState();
+        updateMapVisibility();
+    }
+
+    const categoryListEl = document.getElementById('category-list');
+    validCategories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = activeCategoryIds.has(cat.id) ? 'cat-btn active' : 'cat-btn';
+        btn.dataset.id = cat.id;
+        btn.innerHTML = `<img src="${cat.image}" alt=""> ${t(cat.name)}`;
+
+        btn.addEventListener('click', () => {
+            if (activeCategoryIds.has(cat.id)) {
+                activeCategoryIds.delete(cat.id);
+                btn.classList.remove('active');
+            } else {
+                activeCategoryIds.add(cat.id);
+                btn.classList.add('active');
+                if (activeRegionNames.size === 0) {
+                    setAllRegions(true);
+                }
+            }
+            updateMapVisibility();
+            updateToggleButtonsState();
+        });
+        categoryListEl.appendChild(btn);
+    });
+
+    const regionListEl = document.getElementById('region-list');
+    const sortedRegions = Array.from(uniqueRegions).sort();
+
+    sortedRegions.forEach(region => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn active';
+        btn.dataset.region = region;
+        btn.innerHTML = `📍 ${region}`;
+
+        btn.addEventListener('click', () => {
+            if (activeRegionNames.has(region)) {
+                activeRegionNames.delete(region);
+                btn.classList.remove('active');
+            } else {
+                activeRegionNames.add(region);
+                btn.classList.add('active');
+
+                if (activeCategoryIds.size === 0) {
+                    setAllCategories(true);
+                }
+            }
+            updateMapVisibility();
+            updateToggleButtonsState();
+        });
+        regionListEl.appendChild(btn);
+    });
+
+    function updateMapVisibility() {
+        allMarkers.forEach(m => {
+            const isCatActive = activeCategoryIds.has(m.category);
+            const isRegActive = activeRegionNames.has(m.region);
+
+            if (isCatActive && isRegActive) {
+                if (!map.hasLayer(m.marker)) {
+                    map.addLayer(m.marker);
+                }
+            } else {
+                if (map.hasLayer(m.marker)) {
+                    map.removeLayer(m.marker);
+                }
+            }
+        });
+    }
+
+    const createPopupHtml = (item, lat, lng, regionName) => {
+        const isFav = favorites.includes(item.id);
+        const isCompleted = completedList.includes(item.id);
+
+        const favClass = isFav ? 'active' : '';
+        const favText = isFav ? '★' : '☆';
+        const compClass = isCompleted ? 'active' : '';
+        const compText = isCompleted ? '✔️ 완료됨' : '완료 체크';
+
+        let relatedHtml = '';
+        const relatedList = itemsByCategory[item.category]
+            ? itemsByCategory[item.category].filter(i => i.id !== item.id)
+            : [];
+
+        if (relatedList.length > 0) {
+            const limit = 5;
+            let listItems = '';
+            relatedList.forEach((r, index) => {
+                const hiddenClass = index >= limit ? 'hidden' : '';
+                const rReg = getNearestRegionName(r.x, r.y);
+                const rRegHtml = rReg ? `<span class="related-region">(${rReg})</span>` : '';
+                listItems += `<li class="related-item ${hiddenClass}" onclick="jumpToId(${r.id})">${t(r.name)} ${rRegHtml}</li>`;
+            });
+
+            let expandBtn = '';
+            if (relatedList.length > limit) {
+                const count = relatedList.length - limit;
+                expandBtn = `<button class="btn-expand" onclick="expandRelated(this)">▼ 더보기 (${count}+)</button>`;
+            }
+
+            relatedHtml = `
+                <div class="popup-related">
+                    <div class="popup-related-header">
+                        <h5>관련 ${t(item.category)} (${relatedList.length})
+                        <button class="btn-search-modal" onclick="openRelatedModal('${item.category}')" title="전체 목록 검색">🔍</button></h5>
+                    </div>
+                    <ul class="related-list">${listItems}</ul>
+                    ${expandBtn}
+                </div>
+            `;
+        }
+
+        return `
+            <div class="popup-container" data-id="${item.id}">
+                <div class="popup-header">
+                    ${item.image ? `<img src="${item.image}" class="popup-icon">` : ''}
+                    <h4>${t(item.name)}</h4>
+                </div>
+                <div class="popup-body">
+                    ${item.description ? `<p>${item.description}</p>` : '<p class="no-desc">설명 없음</p>'}
+                </div>
+                ${relatedHtml}
+                <div class="popup-actions">
+                    <button class="action-btn btn-fav ${favClass}" onclick="toggleFavorite(${item.id})" title="즐겨찾기">${favText}</button>
+                    <button class="action-btn btn-complete ${compClass}" onclick="toggleCompleted(${item.id})" title="완료 상태로 표시">${compText}</button>
+                    <button class="action-btn btn-share" onclick="shareLocation(${item.id}, ${lat}, ${lng})" title="위치 공유">📤</button>
+                </div>
+                <div class="popup-footer">
+                    <span class="badge">${t(item.category)}</span>
+                    <span class="badge" style="margin-left:5px;">${regionName}</span>
+                </div>
+            </div>
+        `;
+    };
+
+    const btnToggleCat = document.getElementById('btn-toggle-cat');
+    const btnToggleReg = document.getElementById('btn-toggle-reg');
+
+    if (btnToggleCat) {
+        btnToggleCat.addEventListener('click', () => {
+            const allActive = activeCategoryIds.size === validCategories.length;
+            setAllCategories(!allActive);
+        });
+    }
+
+    if (btnToggleReg) {
+        btnToggleReg.addEventListener('click', () => {
+            const allActive = activeRegionNames.size === uniqueRegions.size;
+            setAllRegions(!allActive);
+        });
+    }
+
+    function updateToggleButtonsState() {
+        if (btnToggleCat) {
+            const allCatActive = activeCategoryIds.size === validCategories.length;
+            btnToggleCat.innerHTML = allCatActive ? '👁️ 모두 끄기' : '👁️‍🗨️ 모두 켜기';
+            btnToggleCat.classList.toggle('off', !allCatActive);
+        }
+        if (btnToggleReg) {
+            const allRegActive = activeRegionNames.size === uniqueRegions.size;
+            btnToggleReg.innerHTML = allRegActive ? '👁️ 모두 끄기' : '👁️‍🗨️ 모두 켜기';
+            btnToggleReg.classList.toggle('off', !allRegActive);
+        }
+    }
     window.toggleCompleted = (id) => {
         const index = completedList.indexOf(id);
-        const btn = document.querySelector(`.popup-container[data-id="${id}"] .btn-complete`);
-        const targetItem = allMarkers.find(m => m.id === id);
+        const target = allMarkers.find(m => m.id === id);
 
         if (index === -1) {
             completedList.push(id);
-            if (btn) {
-                btn.classList.add('active');
-                btn.innerText = '✔️ 완료됨';
-            }
-            if (targetItem) {
-                targetItem.marker._icon.classList.add('completed-marker');
-            }
+            if (target) target.marker._icon.classList.add('completed-marker');
         } else {
             completedList.splice(index, 1);
-            if (btn) {
-                btn.classList.remove('active');
-                btn.innerText = '완료 체크';
-            }
-            if (targetItem) {
-                targetItem.marker._icon.classList.remove('completed-marker');
-            }
+            if (target) target.marker._icon.classList.remove('completed-marker');
         }
         localStorage.setItem('wwm_completed', JSON.stringify(completedList));
+
+        if (target) {
+            const item = mapData.items.find(i => i.id === id);
+            const lat = target.marker.getLatLng().lat;
+            const lng = target.marker.getLatLng().lng;
+            target.marker.setPopupContent(createPopupHtml(item, lat, lng, target.region));
+        }
     };
 
     window.toggleFavorite = (id) => {
         const index = favorites.indexOf(id);
-        const btn = document.querySelector(`.popup-container[data-id="${id}"] .btn-fav`);
+        const target = allMarkers.find(m => m.id === id);
 
         if (index === -1) {
             favorites.push(id);
-            if (btn) {
-                btn.classList.add('active');
-                btn.innerText = '★';
-            }
         } else {
             favorites.splice(index, 1);
-            if (btn) {
-                btn.classList.remove('active');
-                btn.innerText = '☆';
-            }
         }
         localStorage.setItem('wwm_favorites', JSON.stringify(favorites));
         renderFavorites();
+
+        if (target) {
+            const item = mapData.items.find(i => i.id === id);
+            const lat = target.marker.getLatLng().lat;
+            const lng = target.marker.getLatLng().lng;
+            target.marker.setPopupContent(createPopupHtml(item, lat, lng, target.region));
+        }
     };
 
     window.shareLocation = (id, lat, lng) => {
         const baseUrl = window.location.href.split('?')[0];
         const shareUrl = `${baseUrl}?id=${id}&lat=${lat}&lng=${lng}`;
-
         navigator.clipboard.writeText(shareUrl).then(() => {
             alert('링크가 복사되었습니다!\n' + shareUrl);
-        }).catch(err => {
-            prompt("링크 복사:", shareUrl);
-        });
+        }).catch(err => prompt("링크 복사:", shareUrl));
     };
 
     window.jumpToId = (id) => {
         const target = allMarkers.find(m => m.id === id);
         if (target) {
+            if (!activeCategoryIds.has(target.category)) {
+                activeCategoryIds.add(target.category);
+                document.querySelector(`#category-list .cat-btn[data-id="${target.category}"]`)?.classList.add('active');
+            }
+            if (!activeRegionNames.has(target.region)) {
+                activeRegionNames.add(target.region);
+
+                const regBtns = document.querySelectorAll('#region-list .cat-btn');
+                regBtns.forEach(btn => {
+                    if (btn.dataset.region === target.region) btn.classList.add('active');
+                });
+            }
+            updateMapVisibility();
+            updateToggleButtonsState();
+
             moveToLocation(target.marker.getLatLng(), target.marker);
         }
     };
@@ -363,8 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.expandRelated = (btn) => {
         const list = btn.previousElementSibling;
         if (list) {
-            const hiddenItems = list.querySelectorAll('.related-item.hidden');
-            hiddenItems.forEach(item => item.classList.remove('hidden'));
+            list.querySelectorAll('.related-item.hidden').forEach(item => item.classList.remove('hidden'));
         }
         btn.remove();
     };
@@ -380,7 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
         listEl.innerHTML = '';
 
         currentModalList = allMarkers.filter(m => m.category === catId);
-
         renderModalList(currentModalList);
         modal.classList.remove('hidden');
         input.focus();
@@ -398,28 +488,22 @@ document.addEventListener('DOMContentLoaded', () => {
             listEl.innerHTML = '<li style="padding:15px; text-align:center; color:#666;">결과가 없습니다.</li>';
             return;
         }
-
         const currentCompleted = JSON.parse(localStorage.getItem('wwm_completed')) || [];
 
         items.forEach(m => {
             const isDone = currentCompleted.includes(m.id);
             const statusHtml = isDone ? '<span class="modal-item-status">✔️ 완료</span>' : '';
-
-            const lat = m.marker.getLatLng().lat;
-            const lng = m.marker.getLatLng().lng;
-            const regionName = getNearestRegionName(lat, lng);
-
             const li = document.createElement('li');
             li.className = 'modal-item';
             li.innerHTML = `
                 <div style="display:flex; flex-direction:column;">
                     <span class="modal-item-name">${t(m.name)}</span>
-                    <span style="font-size:0.8rem; color:#888;">${regionName}</span>
+                    <span style="font-size:0.8rem; color:#888;">${m.region}</span>
                 </div>
                 ${statusHtml}
             `;
             li.onclick = () => {
-                moveToLocation(m.marker.getLatLng(), m.marker);
+                jumpToId(m.id);
                 closeModal();
             };
             listEl.appendChild(li);
@@ -429,27 +513,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderFavorites() {
         const favListEl = document.getElementById('favorite-list');
         favListEl.innerHTML = '';
-
         if (favorites.length === 0) {
             favListEl.innerHTML = '<p class="empty-msg">즐겨찾기한 항목이 없습니다.</p>';
             return;
         }
-
         favorites.forEach(favId => {
             const item = mapData.items.find(i => i.id === favId);
             if (item) {
                 const div = document.createElement('div');
                 div.className = 'fav-item';
-                const regionName = getNearestRegionName(item.x, item.y);
-                const regionHtml = regionName ? `<span style="font-size:0.8rem; color:#aaa;">(${regionName})</span>` : '';
-
-                div.innerHTML = `<b>${t(item.name)}</b> ${regionHtml}<br><small>${t(item.category)}</small>`;
+                const rReg = getNearestRegionName(item.x, item.y);
+                div.innerHTML = `<b>${t(item.name)}</b> <span style="font-size:0.8rem; color:#aaa;">(${rReg})</span><br><small>${t(item.category)}</small>`;
                 div.addEventListener('click', () => {
-                    const target = allMarkers.find(m => m.id === item.id);
-                    if (target) {
-                        moveToLocation(target.marker.getLatLng(), target.marker);
-                        if (window.innerWidth <= 768) sidebar.classList.remove('open');
-                    }
+                    jumpToId(item.id);
+                    if (window.innerWidth <= 768) toggleSidebar('close');
                 });
                 favListEl.appendChild(div);
             }
@@ -459,7 +536,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderLinks() {
         const linkListEl = document.getElementById('link-list');
         linkListEl.innerHTML = '';
-
         usefulLinks.forEach(link => {
             const a = document.createElement('a');
             a.href = link.url;
@@ -470,16 +546,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function renderUpdates() {
+        const updateListEl = document.getElementById('update-list');
+        if (!updateListEl) return;
+        updateListEl.innerHTML = '';
+        updateHistory.forEach((update, index) => {
+            const isLatest = index === 0 ? 'latest' : '';
+            const div = document.createElement('div');
+            div.className = `update-item ${isLatest}`;
+            const contentHtml = update.content.map(line => `<li>${line}</li>`).join('');
+            div.innerHTML = `
+                <div class="update-header">
+                    <span class="update-version">${update.version}</span>
+                    <span class="update-date">${update.date}</span>
+                </div>
+                <div class="update-content"><ul>${contentHtml}</ul></div>
+            `;
+            updateListEl.appendChild(div);
+        });
+    }
+
     function moveToLocation(latlng, marker = null) {
         map.setView(latlng, 6, { animate: true });
-
-        if (marker) {
-            const catId = marker.options.alt;
-            if (layerGroups[catId] && !map.hasLayer(layerGroups[catId])) {
-                map.addLayer(layerGroups[catId]);
-            }
-            marker.openPopup();
-        }
+        if (marker) marker.openPopup();
     }
 
     const searchInput = document.getElementById('search-input');
@@ -500,14 +589,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtered = currentModalList.filter(m => m.name.includes(term));
         renderModalList(filtered);
     });
-
     document.getElementById('related-modal').addEventListener('click', (e) => {
         if (e.target.id === 'related-modal') closeModal();
     });
 
     const tabs = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
-
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             tabs.forEach(t => t.classList.remove('active'));
@@ -526,52 +613,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleSidebar(action) {
         const isMobile = window.innerWidth <= 768;
-
         if (action === 'open') {
-            if (isMobile) {
-                sidebar.classList.add('open');
-            } else {
+            if (isMobile) sidebar.classList.add('open');
+            else {
                 sidebar.classList.remove('collapsed');
                 setTimeout(() => { map.invalidateSize(); }, 300);
             }
-        } else if (action === 'close') {
-            if (isMobile) {
-                sidebar.classList.remove('open');
-            } else {
+        } else {
+            if (isMobile) sidebar.classList.remove('open');
+            else {
                 sidebar.classList.add('collapsed');
                 setTimeout(() => { map.invalidateSize(); }, 300);
             }
         }
     }
+    if (openBtn) openBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar('open'); });
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleSidebar('close'));
+    map.on('click', () => { if (window.innerWidth <= 768) toggleSidebar('close'); });
+    window.addEventListener('resize', () => { map.invalidateSize(); });
 
-    if (openBtn) {
-        openBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleSidebar('open');
-        });
-    }
-
-    // 닫기(X) 버튼 클릭
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            toggleSidebar('close');
-        });
-    }
-
-    // 지도 클릭 시 (모바일에서만 사이드바 닫기)
-    map.on('click', () => {
-        if (window.innerWidth <= 768) {
-            toggleSidebar('close');
-        }
-    });
-
-    // 화면 크기 변경 시 레이아웃 초기화 (선택 사항)
-    window.addEventListener('resize', () => {
-        map.invalidateSize();
-    });
-
+    updateMapVisibility();
     renderFavorites();
     renderLinks();
+    renderUpdates();
 
     const urlParams = new URLSearchParams(window.location.search);
     const sharedId = parseInt(urlParams.get('id'));
@@ -580,12 +644,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (sharedId && !isNaN(sharedLat) && !isNaN(sharedLng)) {
         setTimeout(() => {
-            const targetItem = allMarkers.find(m => m.id === sharedId);
-            if (targetItem) {
-                moveToLocation([sharedLat, sharedLng], targetItem.marker);
-            } else {
-                moveToLocation([sharedLat, sharedLng], null);
-            }
+            jumpToId(sharedId);
         }, 500);
     }
 });

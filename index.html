@@ -7,9 +7,6 @@
     <title>Where Winds Meet - Interactive Map</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -23,28 +20,26 @@
             </div>
 
             <div class="search-container">
-                <input type="text" id="search-input" placeholder="이름, 설명, 퀘스트 검색...">
+                <input type="text" id="search-input" placeholder="이름 또는 설명 검색...">
             </div>
 
             <div class="tabs">
                 <button class="tab-btn active" data-tab="category-tab">카테고리</button>
-                <button class="tab-btn" data-tab="favorite-tab">즐겨찾기</button>
+                <button class="tab-btn" data-tab="region-tab">지역</button> <button class="tab-btn"
+                    data-tab="favorite-tab">즐겨찾기</button>
                 <button class="tab-btn" data-tab="link-tab">링크</button>
+                <button class="tab-btn" data-tab="update-tab">업데이트</button>
             </div>
 
             <div class="filter-container">
                 <div id="category-tab" class="tab-content active">
+                    <button id="btn-toggle-cat" class="btn-toggle-all">👁️ 모두 끄기</button>
                     <div id="category-list" class="category-list"></div>
                 </div>
 
-                <div id="quest-tab" class="tab-content">
-                    <div id="quest-list" class="quest-list">
-                    </div>
-                    <div id="quest-detail" class="quest-detail hidden">
-                        <button id="back-to-quests" class="back-btn">← 목록으로</button>
-                        <h3 id="quest-title"></h3>
-                        <p id="quest-desc"></p>
-                        <div id="quest-steps" class="quest-steps"></div>
+                <div id="region-tab" class="tab-content">
+                    <button id="btn-toggle-reg" class="btn-toggle-all">👁️ 모두 끄기</button>
+                    <div id="region-list" class="category-list">
                     </div>
                 </div>
 
@@ -56,6 +51,10 @@
 
                 <div id="link-tab" class="tab-content">
                     <div id="link-list" class="link-list"></div>
+                </div>
+
+                <div id="update-tab" class="tab-content">
+                    <div id="update-list" class="update-list"></div>
                 </div>
             </div>
         </aside>
