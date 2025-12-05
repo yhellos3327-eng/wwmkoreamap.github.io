@@ -8,7 +8,7 @@ const updateHistory = [
         ]
     },
     { version: "v1.0.1", date: "2025-12-05", content: ["지역별 필터링 추가", "일괄 토글 버튼 추가"] },
-    { version: "v1.0.0", date: "2025-12-05", content: ["한국어 지도 정식 오픈"] }
+    { version: "v1.0.0", date: "2025-12-05", content: ["한국어 지도 오픈"] }
 ];
 
 const usefulLinks = [
