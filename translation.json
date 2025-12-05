@@ -34,7 +34,7 @@
             "keys": [
                 "guide_trans_steps"
             ],
-            "value": "<b>1. 원본 데이터 확인 (data.json)</b><ul style='margin:5px 0 15px 0; padding-left:20px; list-style-type:disc;'><li>번역할 아이템의 <span style='background:#444; padding:2px 5px; border-radius:3px;'>id</span> (숫자)와 <span style='background:#444; padding:2px 5px; border-radius:3px;'>category</span> (카테고리 ID)를 찾습니다.</li><li>예시: <span style='color:#aaa;'>{\"id\": 1, \"category\": \"NPC\", ...}</span></li></ul><b>2. 번역 데이터 수정 (translation.json)</b><ul style='margin:5px 0 15px 0; padding-left:20px; list-style-type:disc;'><li><span style='color:#daac71;'>overrides</span> 섹션에서 해당 '카테고리 ID'를 찾습니다.</li><li><span style='color:#daac71;'>items</span> 배열 안에 해당 <span style='background:#444; padding:2px 5px; border-radius:3px;'>id</span>를 키(Key)로 갖는 객체를 추가합니다.</li></ul><b>3. 작성 예시</b><div style='background:#111; border:1px solid #444; padding:10px; border-radius:5px; margin-top:5px; font-family:monospace; color:#ce9178; line-height:1.4;'>\"NPC\": {<br>&nbsp;&nbsp;\"items\": [<br>&nbsp;&nbsp;&nbsp;&nbsp;{ \"1\": { \"name\": \"한글 이름\", \"description\": \"한글 설명\" } }<br>&nbsp;&nbsp;]<br>}</div>"
+            "value": "<b>1. 원본 데이터 확인 (data.json)</b><ul style='margin:5px 0 15px 0; padding-left:20px; list-style-type:disc;'><li>번역할 아이템의 <span style='background:#444; padding:2px 5px; border-radius:3px;'>id</span> (숫자)와 <span style='background:#444; padding:2px 5px; border-radius:3px;'>category</span> (카테고리 ID)를 찾습니다.</li><li>예시: <span style='color:#aaa;'>{\"id\": 1, \"category\": \"NPC\", ...}</span></li></ul><b>2. 번역 데이터 수정 (translation.json)</b><ul style='margin:5px 0 15px 0; padding-left:20px; list-style-type:disc;'><li><span style='color:#daac71;'>overrides</span> 섹션에서 해당 '카테고리 ID'를 찾습니다.</li><li><span style='color:#daac71;'>items</span> 배열 안에 <span style='color:#daac71;'>keys</span>(배열)와 <span style='color:#daac71;'>value</span>(객체)를 갖는 새 항목을 추가합니다.</li></ul><b>3. 작성 예시</b><div style='background:#111; border:1px solid #444; padding:10px; border-radius:5px; margin-top:5px; font-family:monospace; color:#ce9178; line-height:1.4;'>\"NPC\": {<br>&nbsp;&nbsp;\"items\": [<br>&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"keys\": [\"1\", \"English Name\"],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"value\": { \"name\": \"한글 이름\", \"description\": \"한글 설명\" }<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;]<br>}</div>"
         },
         {
             "keys": [
@@ -44,7 +44,8 @@
         },
         {
             "keys": [
-                "Archery Competition"
+                "Archery Competition",
+                "ArcheryCompetition"
             ],
             "value": "궁술 대결"
         },
@@ -423,232 +424,370 @@
             "_common_description": "{name} 빠르게 이동할 수 있게 해금하는 경계석.",
             "items": [
                 {
-                    "3": {
+                    "keys": [
+                        "3"
+                    ],
+                    "value": {
                         "name": "불야채"
                     }
                 },
                 {
-                    "4": {
+                    "keys": [
+                        "4"
+                    ],
+                    "value": {
                         "name": "순마장"
                     }
                 },
                 {
-                    "5": {
+                    "keys": [
+                        "5"
+                    ],
+                    "value": {
                         "name": "난마장"
                     }
                 },
                 {
-                    "6": {
+                    "keys": [
+                        "6"
+                    ],
+                    "value": {
                         "name": "연화선원"
                     }
                 },
                 {
-                    "7": {
+                    "keys": [
+                        "7"
+                    ],
+                    "value": {
                         "name": "장군 사당 지하"
                     }
                 },
                 {
-                    "8": {
+                    "keys": [
+                        "8"
+                    ],
+                    "value": {
                         "name": "장군 사당"
                     }
                 },
                 {
-                    "9": {
+                    "keys": [
+                        "9"
+                    ],
+                    "value": {
                         "name": "북맹 유적"
                     }
                 },
                 {
-                    "11": {
+                    "keys": [
+                        "11"
+                    ],
+                    "value": {
                         "name": "북쪽 대나무 숲"
                     }
                 },
                 {
-                    "12": {
+                    "keys": [
+                        "12"
+                    ],
+                    "value": {
                         "name": "대나무 숲 은거지"
                     }
                 },
                 {
-                    "13": {
+                    "keys": [
+                        "13"
+                    ],
+                    "value": {
                         "name": "완석포"
                     }
                 },
                 {
-                    "15": {
+                    "keys": [
+                        "15"
+                    ],
+                    "value": {
                         "name": "적색 절벽"
                     }
                 },
                 {
-                    "16": {
+                    "keys": [
+                        "16"
+                    ],
+                    "value": {
                         "name": "월호 통로"
                     }
                 },
                 {
-                    "17": {
+                    "keys": [
+                        "17"
+                    ],
+                    "value": {
                         "name": "낙성천"
                     }
                 },
                 {
-                    "19": {
+                    "keys": [
+                        "19"
+                    ],
+                    "value": {
                         "name": "곡방 후원"
                     }
                 },
                 {
-                    "20": {
+                    "keys": [
+                        "20"
+                    ],
+                    "value": {
                         "name": "신선 나루"
                     }
                 },
                 {
-                    "21": {
+                    "keys": [
+                        "21"
+                    ],
+                    "value": {
                         "name": "신선 나루 서쪽"
                     }
                 },
                 {
-                    "22": {
+                    "keys": [
+                        "22"
+                    ],
+                    "value": {
                         "name": "주육산림"
                     }
                 },
                 {
-                    "23": {
+                    "keys": [
+                        "23"
+                    ],
+                    "value": {
                         "name": "인연의 길"
                     }
                 },
                 {
-                    "26": {
+                    "keys": [
+                        "26"
+                    ],
+                    "value": {
                         "name": "내세의 언덕"
                     }
                 },
                 {
-                    "27": {
+                    "keys": [
+                        "27"
+                    ],
+                    "value": {
                         "name": "불광정"
                     }
                 },
                 {
-                    "29": {
+                    "keys": [
+                        "29"
+                    ],
+                    "value": {
                         "name": "이별의 길"
                     }
                 },
                 {
-                    "30": {
+                    "keys": [
+                        "30"
+                    ],
+                    "value": {
                         "name": "천불곡"
                     }
                 },
                 {
-                    "31": {
+                    "keys": [
+                        "31"
+                    ],
+                    "value": {
                         "name": "자심 산원"
                     }
                 },
                 {
-                    "33": {
+                    "keys": [
+                        "33"
+                    ],
+                    "value": {
                         "name": "자심촌"
                     }
                 },
                 {
-                    "38": {
+                    "keys": [
+                        "38"
+                    ],
+                    "value": {
                         "name": "불선선"
                     }
                 },
                 {
-                    "39": {
+                    "keys": [
+                        "39"
+                    ],
+                    "value": {
                         "name": "약수의 근원"
                     }
                 },
                 {
-                    "46": {
+                    "keys": [
+                        "46"
+                    ],
+                    "value": {
                         "name": "청풍 언덕"
                     }
                 },
                 {
-                    "47": {
+                    "keys": [
+                        "47"
+                    ],
+                    "value": {
                         "name": "별관 앞산"
                     }
                 },
                 {
-                    "49": {
+                    "keys": [
+                        "49"
+                    ],
+                    "value": {
                         "name": "별관 뒷산"
                     }
                 },
                 {
-                    "50": {
+                    "keys": [
+                        "50"
+                    ],
+                    "value": {
                         "name": "사슴 연못"
                     }
                 },
                 {
-                    "51": {
+                    "keys": [
+                        "51"
+                    ],
+                    "value": {
                         "name": "사슴 숲"
                     }
                 },
                 {
-                    "52": {
+                    "keys": [
+                        "52"
+                    ],
+                    "value": {
                         "name": "용호채"
                     }
                 },
                 {
-                    "53": {
+                    "keys": [
+                        "53"
+                    ],
+                    "value": {
                         "name": "망천 평원"
                     }
                 },
                 {
-                    "55": {
+                    "keys": [
+                        "55"
+                    ],
+                    "value": {
                         "name": "강변역참"
                     }
                 },
                 {
-                    "58": {
+                    "keys": [
+                        "58"
+                    ],
+                    "value": {
                         "name": "황혼촌"
                     }
                 },
                 {
-                    "60": {
+                    "keys": [
+                        "60"
+                    ],
+                    "value": {
                         "name": "도자기 가마"
                     }
                 },
                 {
-                    "62": {
+                    "keys": [
+                        "62"
+                    ],
+                    "value": {
                         "name": "은월산 정상"
                     }
                 },
                 {
-                    "64": {
+                    "keys": [
+                        "64"
+                    ],
+                    "value": {
                         "name": "은월산 계곡"
                     }
                 },
                 {
-                    "65": {
+                    "keys": [
+                        "65"
+                    ],
+                    "value": {
                         "name": "시왕묘"
                     }
                 },
                 {
-                    "66": {
+                    "keys": [
+                        "66"
+                    ],
+                    "value": {
                         "name": "활명의 관"
                     }
                 },
                 {
-                    "72": {
+                    "keys": [
+                        "72"
+                    ],
+                    "value": {
                         "name": "풍화촌"
                     }
                 },
                 {
-                    "292": {
+                    "keys": [
+                        "292"
+                    ],
+                    "value": {
                         "name": "포산호수"
                     }
                 },
                 {
-                    "1004": {
+                    "keys": [
+                        "1004"
+                    ],
+                    "value": {
                         "name": "장경각"
                     }
                 },
                 {
-                    "1005": {
+                    "keys": [
+                        "1005"
+                    ],
+                    "value": {
                         "name": "형연-아래"
                     }
                 },
                 {
-                    "1006": {
+                    "keys": [
+                        "1006"
+                    ],
+                    "value": {
                         "name": "춘추당"
                     }
                 },
                 {
-                    "1007": {
+                    "keys": [
+                        "1007"
+                    ],
+                    "value": {
                         "name": "은룡 연못 아래"
                     }
                 }
@@ -658,17 +797,26 @@
             "_common_description": "강호 사람들 모두가 찾고자 하는 물건",
             "items": [
                 {
-                    "Enchanting Lotus": {
+                    "keys": [
+                        "Enchanting Lotus"
+                    ],
+                    "value": {
                         "name": "노래하는 백목련"
                     }
                 },
                 {
-                    "Redmist Beetle": {
+                    "keys": [
+                        "Redmist Beetle"
+                    ],
+                    "value": {
                         "name": "붉은 탐욕"
                     }
                 },
                 {
-                    "Whisper Hive": {
+                    "keys": [
+                        "Whisper Hive"
+                    ],
+                    "value": {
                         "name": "속삭이는 벌집"
                     }
                 }
@@ -677,21 +825,88 @@
         "Wayfarer": {
             "items": [
                 {
-                    "10": {
+                    "keys": [
+                        "10"
+                    ],
+                    "value": {
                         "name": "천애객 (백초야)",
                         "description": "백초야는 원래 청하 동쪽 끝에 자리한 이름없는 황야였다. 패주 전쟁 시기 연북맹의 병사들이 뿌린 백초 씨앗으로 생명이 깃들었다. 십수 년이 지난 지금, 이곳을 지키던 장병들은 영령이 되었고, 오직 우거진 풀들만 바람에 살랑거리며 영웅의 이름을 읊조리는 듯하다."
                     }
                 },
                 {
-                    "14": {
+                    "keys": [
+                        "14"
+                    ],
+                    "value": {
                         "name": "천애객 (은월산)",
                         "description": "신선 나루 남쪽에는 거대한 산이 길게 뻗어 있다. 청하 주민들은 이 산이 구름과 안개로 가득하고 달과 별을 가린다 하여 '은월산'이라 이름을 붙였다. 은월산은 남쪽으로 용호령, 북쪽으로 불선선, 서쪽으로 중원과 마주하고, 동쪽으로 백초야와 접하며 각지로 통하는 교차로이다."
                     }
                 },
                 {
-                    "25": {
+                    "keys": [
+                        "25"
+                    ],
+                    "value": {
                         "name": "천애객 (선묘주)",
                         "description": "이곳은 한때 융성한 불법의 땅이어서 선묘주라 불렸다. 선묘주 중에는 불광정이 있고, 정상에는 보탑이 하나 있다. 전해지는 바에 의하면 묘선 선사가 이곳에서 법석을 열고 경을 설파할 때 불광이 나타났다고 한다. 아쉽게도 선사가 떠난 지 오래되어 불광이 비추는 광경은 오래전부터 보이지 않는다."
+                    }
+                }
+            ]
+        },
+        "BellofDemoncalm": {
+            "items": [
+                {
+                    "keys": [
+                        "63"
+                    ],
+                    "value": {
+                        "description": "청하의 태평종루 꼭대기에 있는 황종이 울리면 마음을 가라앉히는 효능이 있었다고 한다. 다만 3년 전 알 수 없는 이유로 황종이 손상되어, 그 소리를 더는 들을 수 없게 되었다.<br><br><h3>사용 가능한 기능</h3>\n종을 울려 청하 지역 전체의 필드 보스들을 약화시킵니다."
+                    }
+                }
+            ]
+        },
+        "Bounty": {
+            "items": [
+                {
+                    "keys": [
+                        "Bounty"
+                    ],
+                    "value": {
+                        "description": "강호 각지에 발표된 현상 수배를 수락하고 완료하면 풍부한 보상을 얻을 수 있습니다!"
+                    }
+                }
+            ]
+        },
+        "ArcheryCompetition": {
+            "items": [
+                {
+                    "keys": [
+                        "Yao Yuan",
+                        "399"
+                    ],
+                    "value": {
+                        "name": "요원",
+                        "description": "<h3>{name}</h3>\n<div class=\"row\">\n<div class=\"col-sm-4\">\n<img src=\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/yao-yuan-where-winds-meet-wiki-guide.png\" alt=\"요원\">\n</div>\n<div class=\"col-sm-8\">\n<p>{name}은 트인 공간을 발견하고 당신을 궁술 대결에 초대했습니다.</p>\n</div>\n</div>\n<hr class=\"deco\" />\n<h3>필요 조건</h3>\n<img src=\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/archery-competition-requirements-map-icon-where-winds-meet-wiki-guide.png\" alt=\"화살\">\n<h3>추천 무기</h3><br />\n롱 보우<br />\n<h3>보상</h3><br />\nC등급 보상<br />\n<img\n  src=\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-c-archery-rewards-where-winds-meet-wiki-guide.png\"\n  alt=\"C등급 보상\"\n/><br />\nB등급 보상<br />\n<img\n  src=\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-b-archery-rewards-where-winds-meet-wiki-guide.png\"\n  alt=\"B등급 보상\"\n/><br />\nA등급 보상<br />\n<img\n  src=\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-a-archery-rewards-where-winds-meet-wiki-guide.png\"\n  alt=\"A등급 보상\"\n/>"
+                    }
+                },
+                {
+                    "keys": [
+                        "Feng Jisheng",
+                        "392"
+                    ],
+                    "value": {
+                        "name": "풍계승",
+                        "description": "\u003ch3\u003e{name}\u003c/h3\u003e\n\u003cdiv class\u003d\"row\"\u003e\n\u003cdiv class\u003d\"col-sm-4\"\u003e\n\u003cimg src\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/feng-jisheng-where-winds-meet-wiki-guide.png\" alt\u003d\"Yao Yuan\"\u003e\n\u003c/div\u003e\n\u003cdiv class\u003d\"col-sm-8\"\u003e\n\u003cp\u003e{name}이 탁 트인 공간을 찾아 당신을 궁술 시합에 초대합니다.\u003c/p\u003e\n\u003c/div\u003e\n\u003c/div\u003e\n\u003chr class\u003d\"deco\" /\u003e\n\u003ch3\u003e요구 사항\u003c/h3\u003e\n체력(Constitution) - 13\u003cbr /\u003e\n\u003cimg src\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/archery-competition-requirements-map-icon-where-winds-meet-wiki-guide.png\" alt\u003d\"화살\"\u003e\n\u003ch3\u003e추천 무기\u003c/h3\u003e\u003cbr /\u003e\n장궁(Long Bow)\u003cbr /\u003e\n\u003ch3\u003e보상\u003c/h3\u003e\u003cbr /\u003e\nC 등급 보상\u003cbr /\u003e\n\u003cimg\n  src\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-c-archery-rewards-where-winds-meet-wiki-guide.png\"\n  alt\u003d\"C 등급 보상\"\n/\u003e\u003cbr /\u003e\nB 등급 보상\u003cbr /\u003e\n\u003cimg\n  src\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-b-archery-rewards-where-winds-meet-wiki-guide.png\"\n  alt\u003d\"B 등급 보상\"\n/\u003e\u003cbr /\u003e\nA 등급 보상\u003cbr /\u003e\n\u003cimg\n  src\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-a-archery-rewards-where-winds-meet-wiki-guide.png\"\n  alt\u003d\"A 등급 보상\"\n/\u003e"
+                    }
+                },
+                {
+                    "keys": [
+                        "Wang Xiangpier",
+                        "Wang Xiangpi"
+                    ],
+                    "value": {
+                        "name": "왕향피",
+                        "description": "\u003ch3\u003e{name}\u003c/h3\u003e\u003cbr /\u003e\n\u003cdiv class\u003d\"row\"\u003e\n\u003cdiv class\u003d\"col-sm-4\"\u003e\n\u003cimg\n \tsrc\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/wang-xiangpier-where-winds-meet-wiki-guide.png\"\n \talt\u003d\"Description of the image\"\n/\u003e\u003c/div\u003e\u003cbr /\u003e\n\u003cdiv class\u003d\"col-sm-8\"\u003e\n{name}가 넓은 공간을 찾아 당신에게 궁술 대결을 제안합니다.\u003c/div\u003e\u003c/div\u003e\u003cbr /\u003e\n\u003ch3\u003e필요 조건\u003c/h3\u003e\n\u003cimg src\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/archery-competition-requirements-map-icon-where-winds-meet-wiki-guide.png\" alt\u003d\"화살\"\u003e\n\u003ch3\u003e권장 무기\u003c/h3\u003e\u003cbr /\u003e\n장궁\u003cbr /\u003e\n\u003ch3\u003e보상\u003c/h3\u003e\u003cbr /\u003e\nC 등급 보상\u003cbr /\u003e\n\u003cimg\n \tsrc\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-c-archery-rewards-where-winds-meet-wiki-guide.png\"\n \talt\u003d\"C 등급 보상\"\n/\u003e\u003cbr /\u003e\nB 등급 보상\u003cbr /\u003e\n\u003cimg\n \tsrc\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-b-archery-rewards-where-winds-meet-wiki-guide.png\"\n \talt\u003d\"B 등급 보상\"\n/\u003e\u003cbr /\u003e\nA 등급 보상\u003cbr /\u003e\n\u003cimg\n \tsrc\u003d\"https://wherewindsmeet.wiki.fextralife.com/file/Where-Winds-Meet/grade-a-archery-rewards-where-winds-meet-wiki-guide.png\"\n \talt\u003d\"A 등급 보상\"\n/\u003e"
                     }
                 }
             ]

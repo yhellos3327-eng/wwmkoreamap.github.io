@@ -1,5 +1,12 @@
 const updateHistory = [
     {
+        version: "v1.0.4",
+        date: "2025-12-05",
+        content: [
+            "궁술 대결, 퇴마의 종, 현상금 한글화.",
+        ]
+    },
+    {
         version: "v1.0.3",
         date: "2025-12-05",
         content: [
@@ -64,16 +71,12 @@ const t = (key) => {
  */
 const getJosa = (word, type) => {
     if (!word || typeof word !== 'string') return type.split('/')[0];
-
     const lastChar = word.charCodeAt(word.length - 1);
     if (lastChar < 0xAC00 || lastChar > 0xD7A3) return type.split('/')[0];
-
     const hasJongsung = (lastChar - 0xAC00) % 28 !== 0;
     const [josa1, josa2] = type.split('/');
-
     return hasJongsung ? josa1 : josa2;
 };
-
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -164,11 +167,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 let itemArray = Array.isArray(categoryData.items) ? categoryData.items : [];
 
-                itemArray.forEach(itemObj => {
-                    for (const key in itemObj) {
-                        const value = itemObj[key];
-                        if (key && value) {
-                            flattenedOverrides[categoryId][key] = value;
+                itemArray.forEach(entry => {
+                    if (Array.isArray(entry.keys) && entry.value) {
+                        entry.keys.forEach(k => {
+                            const keyStr = String(k).trim();
+                            flattenedOverrides[categoryId][keyStr] = entry.value;
+                        });
+                    }
+                    else {
+                        for (const key in entry) {
+                            const value = entry[key];
+                            if (key && value && key !== 'keys' && key !== 'value') {
+                                flattenedOverrides[categoryId][key] = value;
+                            }
                         }
                     }
                 });
@@ -419,89 +430,75 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isFav = favorites.includes(item.id);
         const isCompleted = completedList.includes(item.id);
 
-        const favClass = isFav ? 'active' : '';
-        const favText = isFav ? '★' : '☆';
-        const compClass = isCompleted ? 'active' : '';
-        const compText = isCompleted ? '완료됨' : '완료 체크';
-
         const translatedName = t(item.name);
+        const categoryName = t(item.category);
         let itemDescription = item.description || '';
 
+        let replaceName = translatedName;
         if (item.category === "BoundaryStones" || item.category === "Boundary Stones") {
-            const getJosaForTo = (word) => {
-                if (!word) return '로';
-                const lastChar = word.charCodeAt(word.length - 1);
-                if (lastChar < 0xAC00 || lastChar > 0xD7A3) return '로';
+            const josa = typeof getJosa === 'function' ? getJosa(translatedName, '으로/로') : '로';
+            replaceName = translatedName + josa;
+        }
 
-                const jongsungCode = (lastChar - 0xAC00) % 28;
-
-                if (jongsungCode !== 0 && jongsungCode !== 8) {
-                    return '으로';
-                }
-                return '로';
-            }
-
-            const josaAppliedName = translatedName + getJosaForTo(translatedName);
-
-            itemDescription = itemDescription.replace(/{name}/g, josaAppliedName);
+        if (itemDescription) {
+            itemDescription = itemDescription.replace(/{name}/g, replaceName);
         } else {
-            itemDescription = itemDescription.replace(/{name}/g, translatedName);
+            itemDescription = '<p class="no-desc">설명 없음</p>';
         }
 
         let relatedHtml = '';
-        const relatedList = itemsByCategory[item.category]
-            ? itemsByCategory[item.category].filter(i => i.id !== item.id)
-            : [];
+        const relatedItems = itemsByCategory[item.category] || [];
+        const filteredList = relatedItems.filter(i => i.id !== item.id);
 
-        if (relatedList.length > 0) {
+        if (filteredList.length > 0) {
             const limit = 5;
-            let listItems = '';
-            relatedList.forEach((r, index) => {
+            const hiddenCount = filteredList.length - limit;
+
+            const listItemsHtml = filteredList.map((r, index) => {
                 const hiddenClass = index >= limit ? 'hidden' : '';
                 const rReg = getNearestRegionName(r.x, r.y);
                 const rRegHtml = rReg ? `<span class="related-region">(${rReg})</span>` : '';
-                listItems += `<li class="related-item ${hiddenClass}" onclick="jumpToId(${r.id})">${t(r.name)} ${rRegHtml}</li>`;
-            });
 
-            let expandBtn = '';
-            if (relatedList.length > limit) {
-                const count = relatedList.length - limit;
-                expandBtn = `<button class="btn-expand" onclick="expandRelated(this)">▼ 더보기 (${count}+)</button>`;
-            }
+                return `<li class="related-item ${hiddenClass}" onclick="jumpToId(${r.id})">${t(r.name)} ${rRegHtml}</li>`;
+            }).join('');
+
+            const expandBtn = hiddenCount > 0
+                ? `<button class="btn-expand" onclick="expandRelated(this)">▼ 더보기 (${hiddenCount}+)</button>`
+                : '';
 
             relatedHtml = `
-                <div class="popup-related">
-                    <div class="popup-related-header">
-                        <h5>관련 ${t(item.category)} (${relatedList.length})
-                        <button class="btn-search-modal" onclick="openRelatedModal('${item.category}')" title="전체 목록 검색">🔍</button></h5>
-                    </div>
-                    <ul class="related-list">${listItems}</ul>
-                    ${expandBtn}
+            <div class="popup-related">
+                <div class="popup-related-header">
+                    <h5>관련 ${categoryName} (${filteredList.length})
+                    <button class="btn-search-modal" onclick="openRelatedModal('${item.category}')" title="전체 목록 검색">🔍</button></h5>
                 </div>
-            `;
+                <ul class="related-list">${listItemsHtml}</ul>
+                ${expandBtn}
+            </div>
+        `;
         }
 
         return `
-            <div class="popup-container" data-id="${item.id}">
-                <div class="popup-header">
-                    ${item.image ? `<img src="${item.image}" class="popup-icon">` : ''}
-                    <h4>${translatedName}</h4>
-                </div>
-                <div class="popup-body">
-                    ${itemDescription ? `<p>${itemDescription}</p>` : '<p class="no-desc">설명 없음</p>'}
-                </div>
-                ${relatedHtml}
-                <div class="popup-actions">
-                    <button class="action-btn btn-fav ${favClass}" onclick="toggleFavorite(${item.id})" title="즐겨찾기">${favText}</button>
-                    <button class="action-btn btn-complete ${compClass}" onclick="toggleCompleted(${item.id})" title="완료 상태로 표시">${compText}</button>
-                    <button class="action-btn btn-share" onclick="shareLocation(${item.id}, ${lat}, ${lng})" title="위치 공유">📤</button>
-                </div>
-                <div class="popup-footer">
-                    <span class="badge">${t(item.category)}</span>
-                    <span class="badge" style="margin-left:5px;">${regionName}</span>
-                </div>
+        <div class="popup-container" data-id="${item.id}">
+            <div class="popup-header">
+                ${item.image ? `<img src="${item.image}" class="popup-icon" alt="${categoryName}">` : ''}
+                <h4>${translatedName}</h4>
             </div>
-        `;
+            <div class="popup-body">
+                ${itemDescription.startsWith('<p') ? itemDescription : `<p>${itemDescription}</p>`}
+            </div>
+            ${relatedHtml}
+            <div class="popup-actions">
+                <button class="action-btn btn-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite(${item.id})" title="즐겨찾기">${isFav ? '★' : '☆'}</button>
+                <button class="action-btn btn-complete ${isCompleted ? 'active' : ''}" onclick="toggleCompleted(${item.id})" title="완료 상태로 표시">${isCompleted ? '완료됨' : '완료 체크'}</button>
+                <button class="action-btn btn-share" onclick="shareLocation(${item.id}, ${lat}, ${lng})" title="위치 공유">📤</button>
+            </div>
+            <div class="popup-footer">
+                <span class="badge">${categoryName}</span>
+                <span class="badge" style="margin-left:5px;">${regionName}</span>
+            </div>
+        </div>
+    `;
     }
 
     function setAllCategories(isActive) {
